@@ -10,8 +10,8 @@ class engineer:
     
     
     
-    def __init__(self,name,numTasks):
-        self.name = name
+    def __init__(self,ID,numTasks):
+        self.ID = ID
         self.numTasks = numTasks
         
         
