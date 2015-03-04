@@ -1,3 +1,5 @@
+import random
+
 class engineer:
     
     # engineers are spawned with a number of tasks
@@ -10,15 +12,27 @@ class engineer:
     
     
     
-    def __init__(self,ID,numTasks):
+    def __init__(self,ID,numTasks,skill):
         self.ID = ID
         self.numTasks = numTasks
+        self.skill = skill
+        taskList = []
+        initTasks()
         
+    def initTasks(self):
+        
+        
+        #  def __init__(self,difficulty,initialValue,dependenceList,nullZone,nominalDays):
+        
+        for i in range(0,numTasks):
+            difficulty = random.randrange(1,10)
+            intialValue = 0
+            nullZone = .01
+            nominalDays = int(random.uniform*90)
+            dependenceList = []
+            self.taskList.append(task(difficulty,intialValue,dependenceList,nullZone,nominalDays))
         
     def work(self,timeStep):
         a = 1
-        
-        
-    def runModel(self):
-        a = 1
+
     
