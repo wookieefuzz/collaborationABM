@@ -1,4 +1,5 @@
 import random
+from task import task
 
 class engineer:
     
@@ -13,26 +14,37 @@ class engineer:
     
     
     def __init__(self,ID,numTasks,skill):
+        self.taskCounter = 0
         self.ID = ID
         self.numTasks = numTasks
         self.skill = skill
-        taskList = []
-        initTasks()
+        self.taskList = []
+        self.initTasks()
+        self.avgWork = 1.0
+        self.stdDev = 0.0
         
     def initTasks(self):
         
-        
         #  def __init__(self,difficulty,initialValue,dependenceList,nullZone,nominalDays):
         
-        for i in range(0,numTasks):
+        for i in range(0,self.numTasks):
+            self.taskCounter = self.taskCounter + 1
             difficulty = random.randrange(1,10)
             intialValue = 0
             nullZone = .01
-            nominalDays = int(random.uniform*90)
-            dependenceList = []
-            self.taskList.append(task(difficulty,intialValue,dependenceList,nullZone,nominalDays))
+            nominalDays = random.randrange(5,90)
+            taskIDstring = str(self.ID) + '-' + str(self.taskCounter)
+            self.taskList.append(task(difficulty,intialValue,nullZone,nominalDays,taskIDstring))
         
-    def work(self,timeStep):
-        a = 1
 
+
+
+    def work(self):
+        for task in self.taskList:
+            task.work(self.skill,self.avgWork,self.stdDev) 
+        
+    def printTaskInfo(self):
+        for task in self.taskList:
+            task.printInfo()
+        
     
