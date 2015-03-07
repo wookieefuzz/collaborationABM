@@ -14,6 +14,8 @@ class task:
         self.initialValue = initialValue
         self.currentValue = initialValue
         self.nullZone = nullZone
+        self.daysWorked = 0
+        self.error = self.goal - 1.0
        
         self.IDlist = []
         self.errorList = []
@@ -27,16 +29,20 @@ class task:
         
     def work(self,userSkill,avgWork,stdDev):
         
-        if(self.currentValue < self.goal):
-            self.state = 'incomplete'
-        
-        # get the colleague modifier
         colleagueModifier = self.getColleagueModifier()
         
+        self.error = (self.goal + colleagueModifier)- 1.0
+        
+        self.improveModel(userSkill)
+        
+        if(self.currentValue < (self.goal +colleagueModifier)):
+            self.state = 'incomplete'
+            
         tempGoal = self.goal + colleagueModifier
         
         # if you aren't with tol of your goal, do work 
         if (self.state == 'incomplete'):
+             self.daysWorked = self.daysWorked + 1
              skillModifier = userSkill / self.difficulty
              dailyWork = random.gauss(avgWork,stdDev)/self.nominalDays # amount of work user will accomplish this day (random variable)
              self.currentValue = self.currentValue + dailyWork
@@ -47,38 +53,63 @@ class task:
         
         
             
-    def doWork(self,userSkill,avgWork,stdDev):
-        
-        # if the current value is within a tolerance of the goal, don't do any work, otherwise: work
-        if (abs(self.currentValue - self.goal)>self.nullZone):
-            skillModifier = userSkill / self.difficulty # ratio increases as user skill outstrips difficulty
-            rv = random.gauss(skillModifier * avgWork * self.maxWork,stdDev*self.maxWork); 
-            colleagueModifier = self.getColleagueModifier()
-            #managementModifier = self.getManagementModifer()
-            self.currentValue = self.currentValue + rv #+ colleagueModifier + managementModifier
-        return self.currentValue
+#     def doWork(self,userSkill,avgWork,stdDev):
+#         
+#         self.improveModel(userSkill)
+#         
+#         # if the current value is within a tolerance of the goal, don't do any work, otherwise: work
+#         if (abs(self.currentValue - self.goal)>self.nullZone):
+#             skillModifier = userSkill / self.difficulty # ratio increases as user skill outstrips difficulty
+#             rv = random.gauss(skillModifier * avgWork * self.maxWork,stdDev*self.maxWork); 
+#             colleagueModifier = self.getColleagueModifier()
+#             #managementModifier = self.getManagementModifer()
+#             self.currentValue = self.currentValue + rv #+ colleagueModifier + managementModifier
+#         return self.currentValue
    
     def runModel(self,contributedInformation):
         # run the model
         return void
         
         
-    def improveModel(self):
-        # model can only be improved if task is approaching DONE state
-        # or if help is received
+    def improveModel(self,userSkill):
+        skillModifier = userSkill / self.difficulty # this can range from .1 to 10
+        # max improvement is a function of this, max improvement should be (.25 / nominal days) so someone improving at the max rate each day gets a perfect design
+        maxImprovement = .25 / (10.0*self.nominalDays)
+        improvement = maxImprovement * skillModifier
+        # probability of improving model approaches 100% as time progresses
+        rv = random.random()
+        improvementThreshold = .5 - 0.4*(float(self.daysWorked) / float(self.nominalDays))
+        if rv>improvementThreshold:
+            self.goal = self.goal + improvement
         
-        return void
+        if self.goal > 1.0:
+            self.goal = 1.0
+            
+        return 0.0
     
     def getColleagueModifier(self):
-        # loop through collaborators
-        i = -1
+        
         colleagueModifier = 0.0
-        for e in self.errorList:
-            i = i + 1
-            print i 
-            colleagueModifier = colleagueModifier + (e * self.influenceList[i] * self.scaleFactor)
+        
+        # loop through collaborators
+        numDepends = len(self.errorList)
+        
+        if numDepends==1:
+            err = self.errorList[0]
+#             print err
+            influence = self.influenceList[0]
+#             print influence
+#             print self.scaleFactor
+            colleagueModifier = (err * influence * self.scaleFactor)
+        elif numDepends > 1:
+            i = -1
+            for e in self.errorList:
+                i = i + 1
+                print i 
+                colleagueModifier = colleagueModifier + (e * self.influenceList[i] * self.scaleFactor)
+            
         return colleagueModifier
-    
+        
     def getManagementModifer(self):
         return 0.0
     
@@ -94,8 +125,10 @@ class task:
         print 'Task should nominally take ' + str(self.nominalDays) + ' days'
         percentGoalError = int((1 - self.goal)*100.0)
         print 'Current Design goal error is ' +str(percentGoalError) + '%'
+        print 'Current design goal is ' + str(self.goal)
         percentComplete = int((self.currentValue / self.goal)*100.0)
         print 'Current progress towards goal is ' +str(percentComplete)+ '%'
+        print 'Current days worked are: ' + str(self.daysWorked)
     
     def updateModel(self,contributor,newValue):
         index = dependenceList.index(contributor);
