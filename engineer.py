@@ -23,6 +23,10 @@ class engineer:
         #self.initTestTasks()
         self.avgWork = .8
         self.stdDev = 0.1
+        self.listening = 0.0
+        
+    def setListening(self,listening):
+        self.listening = listening
         
     def initTasks(self):
         
@@ -59,3 +63,6 @@ class engineer:
             task.printInfo()
         
     
+    def getFeedback(self,error,task,force):
+        return 0.0
+        

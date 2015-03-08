@@ -119,6 +119,11 @@ class task:
         self.influenceList = influenceList
         self.scaleFactor = scaleFactor
     
+    def updateModel(self,contributor,newValue):
+        index = dependenceList.index(contributor);
+        self.contributedInformation[index] = newValue        
+        return void
+    
     def printInfo(self):
         print 'Task ID is ' + str(self.ID)
         print 'Difficulty level is ' + str(self.difficulty)
@@ -129,8 +134,3 @@ class task:
         percentComplete = int((self.currentValue / self.goal)*100.0)
         print 'Current progress towards goal is ' +str(percentComplete)+ '%'
         print 'Current days worked are: ' + str(self.daysWorked)
-    
-    def updateModel(self,contributor,newValue):
-        index = dependenceList.index(contributor);
-        self.contributedInformation[index] = newValue        
-        return void
