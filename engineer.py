@@ -24,9 +24,20 @@ class engineer:
         self.avgWork = .8
         self.stdDev = 0.1
         self.listening = 0.0
+        self.commAccuracy = 0.0
+        self.freq = 0.0
+        self.freqStdDev = 0.0
+        self.
         
     def setListening(self,listening):
         self.listening = listening
+        
+    def setCommAccuracy(self,commAccuray):
+        self.commAccuracy = commAccuray
+        
+    def setFrequency(self,freq,stdDev):
+        self.freq = freq
+        self.freqStdDev = stdDev
         
     def initTasks(self):
         
@@ -62,7 +73,36 @@ class engineer:
         for task in self.taskList:
             task.printInfo()
         
+    def communicate(self):
+        
     
-    def getFeedback(self,error,task,force):
-        return 0.0
+    def getFeedback(self,taskIndex,error,force):
+        rv = random.random()
+        listeningThreshold = .5 - (.4 * self.listening)
+        
+        # if user is good at listening, take the advice
+        if rv>listeningThreshold:
+            self.taskList[taskIndex].getManagementInput(error,force)
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         

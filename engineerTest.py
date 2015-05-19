@@ -17,9 +17,11 @@ scaleFactor = .2
 e0.taskList[0].updateErrorList(IDlist,errorList,influenceList,scaleFactor)
 
 for d in range(0,365):
-    e0.taskList[0].updateErrorList(IDlist,[e1.taskList[0].error],influenceList,scaleFactor)
+    e0.taskList[0].updateErrorList(IDlist,[e1.taskList[0].error],influenceList,scaleFactor) # this grabs the most recent error
     e0.work()
     e1.work()
+    e0.communicate()
+    e1.communicate()
     
 print '----------------------------------'
 

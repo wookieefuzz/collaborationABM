@@ -14,10 +14,8 @@ class manager:
     
     def checkForErrors(self):
         
-        
         # manager skill relative to task difficulty informs probability of spotting error
         # manager only recognizes error, not value, feeds back as jump in task goal via modifier
-        
         
         force = 1.0
         

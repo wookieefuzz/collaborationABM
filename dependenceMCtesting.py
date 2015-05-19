@@ -4,7 +4,7 @@ case = 1
 
 # two engineers, one task apiece, one task dependent on the other
 if case == 1:
-    numtrials = 100000
+    numtrials = 10000
     # run 10,000 trials with dependence between the engineers and 10,000 without
     # track the average goal for each, compare
     

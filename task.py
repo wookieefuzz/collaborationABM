@@ -15,7 +15,8 @@ class task:
         self.currentValue = initialValue
         self.nullZone = nullZone
         self.daysWorked = 0
-        self.error = self.goal - 1.0
+        self.error = self.goal - 1.0 # this is the actual error
+        self.publicError = 1.0 # this is the error shared with others
        
         self.IDlist = []
         self.errorList = []
@@ -30,16 +31,16 @@ class task:
     def work(self,userSkill,avgWork,stdDev):
         
         colleagueModifier = self.getColleagueModifier()
+        managementModifier = self.getManagementModifer()
         
-        self.error = (self.goal + colleagueModifier)- 1.0
+        self.error = (self.goal + colleagueModifier)- 1.0 # error is due to self goal and colleagues
         
         self.improveModel(userSkill)
         
-        if(self.currentValue < (self.goal +colleagueModifier)):
+        # you've finished if you reach your goal, modified by colleagues and management
+        if(self.currentValue < (self.goal +colleagueModifier + managementModifier)): 
             self.state = 'incomplete'
             
-        tempGoal = self.goal + colleagueModifier
-        
         # if you aren't with tol of your goal, do work 
         if (self.state == 'incomplete'):
              self.daysWorked = self.daysWorked + 1
@@ -47,25 +48,12 @@ class task:
              dailyWork = random.gauss(avgWork,stdDev)/self.nominalDays # amount of work user will accomplish this day (random variable)
              self.currentValue = self.currentValue + dailyWork
         
-        if(self.currentValue > self.goal):
+        if(self.currentValue > self.goal + managementModifier + colleagueModifier):
             self.state = 'complete'
         
         
         
-            
-#     def doWork(self,userSkill,avgWork,stdDev):
-#         
-#         self.improveModel(userSkill)
-#         
-#         # if the current value is within a tolerance of the goal, don't do any work, otherwise: work
-#         if (abs(self.currentValue - self.goal)>self.nullZone):
-#             skillModifier = userSkill / self.difficulty # ratio increases as user skill outstrips difficulty
-#             rv = random.gauss(skillModifier * avgWork * self.maxWork,stdDev*self.maxWork); 
-#             colleagueModifier = self.getColleagueModifier()
-#             #managementModifier = self.getManagementModifer()
-#             self.currentValue = self.currentValue + rv #+ colleagueModifier + managementModifier
-#         return self.currentValue
-   
+        
     def runModel(self,contributedInformation):
         # run the model
         return void
@@ -113,6 +101,9 @@ class task:
     def getManagementModifer(self):
         return 0.0
     
+    def getManagementInput(self,error,force):
+        return 0.0
+    
     def updateErrorList(self,IDlist,errorList,influenceList,scaleFactor):
         self.IDlist = IDlist
         self.errorList = errorList
@@ -123,6 +114,8 @@ class task:
         index = dependenceList.index(contributor);
         self.contributedInformation[index] = newValue        
         return void
+    
+    
     
     def printInfo(self):
         print 'Task ID is ' + str(self.ID)
