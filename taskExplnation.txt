@@ -1,0 +1,54 @@
+purestate starts at 0 and is incremented by work
+trueState is the purestate - dependenceModifier
+perceivedState = perceivedState + work
+
+actual goal is always 1
+
+perceivedGoal increases randomly(ish) with time
+perceivedGoal is INCREASED by others communicated errors
+
+work is STOPPED when perceivedState => perceivedGoal
+
+dependenceModifier is the sum of all dependent errors times their scaling factors
+
+for example:
+	a task starts with a perceived goal of .75
+	it is dependent on another task with a perceived goal of .75
+		that task is currently at 0 making its true error 1.0
+		the other engineer perceives the error as .75
+		the other engineer communicates the error as .75 (assuming they are 100% truthful)
+	at t = 0
+		purestate of our task is 0.0
+		trueState is 0.0 - 1.0*scalingFactor (in essence, we have farther to go to get it done), lets use .1
+		true state is 0.0 - .1 = -.1
+		perceivedGoal is .75 + .75*scalingFactor (lets make it .1)
+		perceivedGoal is .75 + .075 = .825
+		trueError = trueGoal - (-.1) = 1.1
+		perceivedErr = .8275 - 0.0
+		
+	engineer does .1 work
+	
+	perceivedState goes to .1
+	trueState goes to .1 - .1*1 = 0.0
+	perceivedGoal is still .8275
+	perceivedErr = .8275 - .1
+	trueErr = trueGoal - trueState
+	
+	so process is:
+	
+	get all COMMUNICATED errors from other tasks
+	get all TRUE errors from other tasks
+	sum all errors times their dependence modifiers
+	perceivedGoal* = perceivedGoal + dependenceErrSum (note, perceivedGoal* is NOT the same as perceivedGoal, it is only used for figuring out if you are done or not)
+	
+	if done
+		do nothing
+	else
+		do some work
+		incrementPureState
+		trueState = pureState + dependenceModifier
+		perceivedState = perceivedState + work
+		maybe increase perceivedGoal (subject to RV)
+		
+		
+	

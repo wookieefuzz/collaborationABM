@@ -11,6 +11,14 @@ class engineer:
     # impact of bad decision on low priority task is small
     # each task has an associated model
     
+    # when working, these are tasks:
+    # do work
+    
+    # check to see if you should update your data you are presenting to other people
+    
+    # if time to share information with other people
+    # perturb function is dependent on skill modifier, current error, and time spent on project
+    
     
     
     def __init__(self,ID,numTasks,skill):
@@ -27,7 +35,7 @@ class engineer:
         self.commAccuracy = 0.0
         self.freq = 0.0
         self.freqStdDev = 0.0
-        self.
+        
         
     def setListening(self,listening):
         self.listening = listening
@@ -74,6 +82,7 @@ class engineer:
             task.printInfo()
         
     def communicate(self):
+        print 'fill this in'
         
     
     def getFeedback(self,taskIndex,error,force):
