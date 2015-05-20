@@ -5,9 +5,9 @@ from engineer2 import engineer2
 timeResultsList = []
 stateResultsList = []
 
-timeliness = 1.0
-taskDiff = 5.0
-engSkill = 5.0
+timeliness = 0.0
+taskDiff = 10.0
+engSkill = 1.0
 
 for x in range(0,1000):
 
@@ -36,17 +36,23 @@ for x in range(0,1000):
     e2.addTask(t5)
     
     # set the dependencies
-    e0.addDependentTask(0,.5,t5)
+    #e0.addDependentTask(0,.5,t5)
+    #e0.addDependentTask(1,.5,t2)
+    
+    
+    #e1.addDependentTask(0,.5,t1)
+    #e1.addDependentTask(1,.5,t4)
+    
+    #e1.addDependentTask(0,.5,t3)
+    #e1.addDependentTask(1,.5,t0)
+    
+    e0.addDependentTask(1,.5,t4)
     e0.addDependentTask(1,.5,t2)
     
-    
     e1.addDependentTask(0,.5,t1)
-    e1.addDependentTask(1,.5,t4)
     
-    e1.addDependentTask(0,.5,t3)
-    e1.addDependentTask(1,.5,t0)
+    e2.addDependentTask(0,.5,t1)
     
-
 
     while(t0.state.complete == False or t1.state.complete == False or t2.state.complete == False or t3.state.complete == False or t4.state.complete == False or t5.state.complete == False):
         e0.work()
@@ -58,6 +64,7 @@ for x in range(0,1000):
     
     
     days = [t0.daysWorked,t1.daysWorked,t2.daysWorked,t3.daysWorked,t4.daysWorked,t5.daysWorked]
+    states = [[t0.state.trueState,t1.state.trueState,t2.state.trueState,t3.state.trueState,t4.state.trueState,t5.state.trueState]]
     
     stateResultsList.append(t1.state.trueState)
     timeResultsList.append(max(days))
@@ -68,4 +75,5 @@ print 'average days = ' + str(avgDays)
 print 'average state = ' + str(avgState)
 
 e0.printTaskInfo()
+print states
 
