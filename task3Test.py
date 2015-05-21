@@ -101,19 +101,20 @@ t0 = task3(diff,cat,prio,days,name)
 avgWork = .8
 stdDev = .1
 effort = 1.0
+timeliness = 0.0
 
 t1 = task3(diff,cat,prio,days,'blah')
  
 # impact factor
-impactFactor = 1.0
+impactFactor = .5
  
 # add the dependsTask
 t0.addDependsTask(t1,impactFactor)
 #t1.setToTrueComplete()
 #t1.setToN00bComplete()
 while(t0.complete == False):
-    t0.calcPerceivedState(avgWork,stdDev,effort)
-    t1.calcPerceivedState(avgWork,stdDev,effort)
+    t0.calcPerceivedState(avgWork,stdDev,effort,timeliness)
+    t1.calcPerceivedState(avgWork,stdDev,effort,timeliness)
 print '----------------------------------------------------'
 t0.printInfo()
 print '----------------------------------------------------'

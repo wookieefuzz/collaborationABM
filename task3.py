@@ -24,7 +24,11 @@ class task3:
         self.presentedState = 0.0
         
         self.complete = False
+        self.gainedKnowledge = 0.0
         
+    
+    def updateSharedInfo(self):
+        self.presentedState = self.perceivedState
     
     def reset(self):
         self.complete = False
@@ -37,6 +41,7 @@ class task3:
         self.communicatedGoal = self.perceivedGoal
         self.communicatedState = 0.0
         self.presentedState = 0.0
+        self.gainedKnowledge = 0.0
     
     def setToTrueComplete(self):
         self.complete = True
@@ -49,6 +54,7 @@ class task3:
         self.communicatedGoal = self.perceivedGoal
         self.communicatedState = 1.0
         self.presentedState = 1.0
+        self.gainedKnowledge = .25
         
     def setToN00bComplete(self):
         self.complete = True
@@ -61,6 +67,7 @@ class task3:
         self.communicatedGoal = 1.0
         self.communicatedState = .75
         self.presentedState = 1.0
+        self.gainedKnowledge = 0.0
     
     def cap(self,input,capVal):
         output = 0.0
@@ -105,8 +112,8 @@ class task3:
         return work
         
     
-    def calcPerceivedState(self,avgWork,stdDev,effort):
-        if self.perceivedState > 1.0:
+    def calcPerceivedState(self,avgWork,stdDev,effort,timeliness):
+        if self.perceivedState >= 1.0:
             print 'Task Already Complete, was finished in ' + str(self.daysWorked) + ' days'
             self.complete = True
         else: 
@@ -130,10 +137,16 @@ class task3:
                 n += 1
                 #print 'communicated error = ' + str(t.communicatedGoal - t.communicatedState)
                 #print 'so we are adding: ' + str((t.communicatedGoal - t.communicatedState) * t.priority * self.impactAmnt[n])
-                numSum += -((t.communicatedGoal - t.communicatedState) * t.priority * self.impactAmnt[n] / self.nominalDays) / prioritySum
+                #numSum += -((t.communicatedGoal - t.communicatedState) * t.priority * self.impactAmnt[n] / self.nominalDays) / prioritySum
+                numSum += -((t.communicatedGoal - t.presentedState) * t.priority * self.impactAmnt[n] / self.nominalDays) / prioritySum
             
             ps = numSum 
             self.perceivedState += ps
+            
+            rv = random.random()
+            
+            if (rv<timeliness):
+                self.updateSharedInfo()
         
     
     def printTrueState(self):
@@ -158,7 +171,10 @@ class task3:
     
     
     def printInfo(self):
-        self.printTrueState()
+#         self.printTrueState()
+#         self.printTrueState()
+#         self.printTrueState()
+#         self.printTrueState()
         print 'Complete? = ' + str(self.complete)
         print 'Difficulty = ' + str(self.difficulty)
         print 'Category = ' + str(self.category)
@@ -176,6 +192,7 @@ class task3:
         print 'Communicated Goal = ' + str(self.communicatedGoal)
         print 'Communicated State = ' +str(self.communicatedState)
         print 'Presented State = ' +str(self.presentedState)
+        print 'Gained Knowledge = ' +str(self.gainedKnowledge)
         
         
         
