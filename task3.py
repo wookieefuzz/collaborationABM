@@ -138,10 +138,12 @@ class task3:
                 #print 'communicated error = ' + str(t.communicatedGoal - t.communicatedState)
                 #print 'so we are adding: ' + str((t.communicatedGoal - t.communicatedState) * t.priority * self.impactAmnt[n])
                 #numSum += -((t.communicatedGoal - t.communicatedState) * t.priority * self.impactAmnt[n] / self.nominalDays) / prioritySum
-                numSum += -((t.communicatedGoal - t.presentedState) * t.priority * self.impactAmnt[n] / self.nominalDays) / prioritySum
+                numSum += -((t.communicatedGoal - t.presentedState) * t.priority * effort*self.impactAmnt[n] / self.nominalDays) / prioritySum
             
             ps = numSum 
             self.perceivedState += ps
+            if self.perceivedState<0.0:
+                self.perceivedState = 0.0
             
             rv = random.random()
             
@@ -175,6 +177,7 @@ class task3:
 #         self.printTrueState()
 #         self.printTrueState()
 #         self.printTrueState()
+        print 'Name = ' + str(self.name)
         print 'Complete? = ' + str(self.complete)
         print 'Difficulty = ' + str(self.difficulty)
         print 'Category = ' + str(self.category)

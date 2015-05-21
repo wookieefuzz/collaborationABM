@@ -113,40 +113,50 @@ class engineer3:
         
         numTasks = len(self.taskList)
         
-        # add up all the priorities, this will let us know how much to work on each task
-        prioritySum = 0.0
+        stillWorking = False
         for t in self.taskList:
-            prioritySum = prioritySum + t.priority
-            
-        # now do the work    
-        # start off by finding the skill modifier
-        # this is hampered by 50% if work is not in user's wheelhouse
-        # if user skill far outstrips difficulty, this 50% becomes less of an issue
+            if t.complete == False:
+                stillWorking = True
         
-        n = -1
-        
-        for t in self.taskList:
+        if stillWorking == True:    
+            # add up all the priorities, this will let us know how much to work on each task
+            prioritySum = 0.0
+            for t in self.taskList:
+                if t.complete == False:
+                    prioritySum = prioritySum + t.priority
+                
+            # now do the work    
+            # start off by finding the skill modifier
+            # this is hampered by 50% if work is not in user's wheelhouse
+            # if user skill far outstrips difficulty, this 50% becomes less of an issue
             
-            n += 1
+            n = -1
             
-            if self.category == t.category:
-                skillModifier = self.skill/t.difficulty
-            else:
-                skillModifier = 0.5 * self.skill/t.difficulty
+            for t in self.taskList:
+                
+                n += 1
+                
+                if self.category == t.category:
+                    skillModifier = self.skill/t.difficulty
+                else:
+                    skillModifier = 0.5 * self.skill/t.difficulty
+                
+                # calculate the effort for each task (2 equal priority tasks will get 50% effort each)
+                effort = t.priority / prioritySum
+                
+                # improve task's PERCEIVED GOAL by some amount
+                self.improveModel(t,skillModifier,effort)
             
-            # calculate the effort for each task (2 equal priority tasks will get 50% effort each)
-            effort = t.priority / prioritySum
-            
-            # improve task's PERCEIVED GOAL by some amount
-            self.improveModel(t,skillModifier,effort)
-        
-            # do work on the task
-            # perceived state will increase
-            # ACTUAL state will still be affected by dependence
-            
-            
-            effortList.append(effort)
-           
+                # do work on the task
+                # perceived state will increase
+                # ACTUAL state will still be affected by dependence
+                
+                
+                effortList.append(effort)
+        else:
+            for t in self.taskList:
+                effortList.append(0.0)
+                    
         return effortList
            
            
