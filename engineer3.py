@@ -67,7 +67,13 @@ class engineer3:
             t.calcPerceivedState(self.avgWork,self.stdDev,effortAmount[i],self.timeliness)
             
            
-    
+    def receiveFeedback(self,errList,goalList):
+        i = -1
+        for t in self.taskList:
+            i += 1
+            rv = random.random()
+            if rv<self.listening:
+                t.updateManagementModifier(errList[i],goalList[i])
     
     
     

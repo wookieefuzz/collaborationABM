@@ -5,6 +5,8 @@ class task3:
     def __init__(self,diff,cat,prio,days,name):
         self.name = name
         
+        self.managementModifier = 0.0
+        
         self.difficulty = diff
         self.category = cat
         
@@ -78,11 +80,15 @@ class task3:
         
         return output
         
-    
+    def updateManagementModifier(self,err,goal):
+        self.managementModifier = err
+        self.perceivedGoal = goal
+        
+        
     def calcTrueState(self):
         ts1 = (self.workAmount * float(self.daysWorked))/float(self.nominalDays)
         ts1 = self.cap(ts1,1.0)
-        print
+        
         prioritySum = self.priority
         
         n = -1
@@ -95,7 +101,7 @@ class task3:
         for t in self.dependsOnTasks:
             n += 1
             numSum += t.trueState * t.priority * self.impactAmnt[n]
-            print ' just added ' + str(t.trueState) + ' from task ' + str(t.name)
+            #print ' just added ' + str(t.trueState) + ' from task ' + str(t.name)
         
         ts = numSum / prioritySum
         
@@ -116,6 +122,16 @@ class task3:
         if self.perceivedState >= 1.0:
             print 'Task Already Complete, was finished in ' + str(self.daysWorked) + ' days'
             self.complete = True
+            
+        elif self.managementModifier > (1.0 - self.perceivedState):
+            #print 'ignoring my perception, just listening to boss'
+            self.perceivedState = 1.0 - self.managementModifier
+            work = self.work(avgWork,stdDev,effort)
+            
+            self.workAmount += work
+            self.daysWorked += 1.0
+            self.perceivedState += work
+            
         else: 
             self.complete = False
             # come up with a work amount
@@ -142,6 +158,11 @@ class task3:
             
             ps = numSum 
             self.perceivedState += ps
+            
+          
+            
+            
+            
             if self.perceivedState<0.0:
                 self.perceivedState = 0.0
             
