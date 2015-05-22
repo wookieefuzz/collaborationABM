@@ -5,6 +5,11 @@ class task3:
     def __init__(self,diff,cat,prio,days,name):
         self.name = name
         
+        self.nullZone = .02
+        self.impThreshold = .001
+        self.noMoreImprovement = False
+        self.improvementHistory = [0]*30
+        
         self.managementModifier = 0.0
         self.managementDeemsComplete = False
         self.managementState = 'Stale'
@@ -29,6 +34,7 @@ class task3:
         
         self.complete = False
         self.gainedKnowledge = 0.0
+        
         
     
     def updateSharedInfo(self):
@@ -73,6 +79,8 @@ class task3:
         self.presentedState = 1.0
         self.gainedKnowledge = 0.0
     
+        
+        
     def cap(self,input,capVal):
         output = 0.0
         if (input>capVal):    
@@ -81,12 +89,25 @@ class task3:
             output = input
         
         return output
+    
+    
+    def updateHistory(self,newVal):
+        for i in range(0,29):
+            self.improvementHistory[i] = self.improvementHistory[i+1]
+        self.improvementHistory[29] = newVal
         
+    def avgImprovement(self):
+        avg = sum(self.improvementHistory) / 30.0
+        return avg
+            
+    
     def updateManagementModifier(self,err,goal):
         #print 'received error update of ' + str(err) + ' and goal is ' + str(goal)
         self.managementState = 'Fresh'
         self.managementModifier = err
-        self.perceivedGoal = goal
+        self.perceivedGoal = 1.05 * self.perceivedGoal
+        if self.perceivedGoal > 1.0:
+            self.perceivedGoal = 1.0
         
         
     def calcTrueState(self):
@@ -123,8 +144,11 @@ class task3:
         
     
     def calcPerceivedState(self,avgWork,stdDev,effort,timeliness):
-        if (self.perceivedState >= 1.0) or (self.managementDeemsComplete == True):
-            print 'Task Already Complete, was finished in ' + str(self.daysWorked) + ' days'
+        
+        oldPerceivedState = self.perceivedState
+        
+        if (self.perceivedState >= 1.0-self.nullZone) or (self.managementDeemsComplete == True) or (self.noMoreImprovement == True):
+            #print 'Task Already Complete, was finished in ' + str(self.daysWorked) + ' days'
             self.complete = True
             
         #elif (self.managementModifier > (1.0 - self.perceivedState)) & (self.managementState == 'Fresh'):
@@ -133,6 +157,12 @@ class task3:
             #print 'ignoring my perception, just listening to boss'
             #print 'management modifier was ' + str(self.managementModifier)
             self.perceivedState = 1.0 - self.managementModifier
+            
+            # EXPERIMENTAL ! This would AVERAGE their states
+            
+            avg = (self.perceivedState + (1.0-self.managementModifier)) / 2.0
+            self.perceivedState = avg
+            
             #print 'so my perceived state is ' + str(self.perceivedState)
             work = self.work(avgWork,stdDev,effort)
             
@@ -170,8 +200,8 @@ class task3:
             n = -1
             for t in self.dependsOnTasks:
                 n += 1
-                print 'communicated error = ' + str(t.communicatedGoal - t.communicatedState)
-                print 'so we are adding: ' + str((t.communicatedGoal - t.communicatedState) * t.priority * self.impactAmnt[n])
+                #print 'communicated error = ' + str(t.communicatedGoal - t.communicatedState)
+                #print 'so we are adding: ' + str((t.communicatedGoal - t.communicatedState) * t.priority * self.impactAmnt[n])
                 numSum += -((t.communicatedGoal - t.communicatedState) * t.priority * self.impactAmnt[n] / self.nominalDays) / prioritySum
                 numSum += -((t.communicatedGoal - t.presentedState) * t.priority * effort*self.impactAmnt[n] / self.nominalDays) / prioritySum
             
@@ -184,6 +214,19 @@ class task3:
             
         if self.perceivedState<0.0:
             self.perceivedState = 0.0
+            
+        #print self.improvementHistory
+        improvement = self.perceivedState - oldPerceivedState
+        self.updateHistory(improvement)
+        avgImp = self.avgImprovement()
+        print avgImp
+        #print self.improvementHistory
+        
+        if (self.daysWorked > self.nominalDays) & (avgImp<self.impThreshold):
+            print 'no meaningful improvement'
+            self.noMoreImprovement = True
+            
+            
             
         rv = random.random()
             
