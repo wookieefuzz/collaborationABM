@@ -34,6 +34,10 @@ class manager:
                 rv = random.random()
                 if rv < self.timeliness:
                     actualTaskError = t.trueGoal - t.trueState
+                    if actualTaskError <= 0.0 :
+                        actualTaskError = 0.0
+                        t.managementDeemsComplete = True
+                    #print 'manager sees task goal as ' +str(t.trueGoal) + ' and state as ' +str(t.trueState) +' and error is ' + str(actualTaskError)
                     if (self.category == t.category):
                         perceivedError = self.insight * actualTaskError
                     else:

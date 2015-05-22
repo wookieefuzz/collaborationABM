@@ -11,7 +11,7 @@ from task3 import task3
 
 mSkill = 5.0
 mCat = 1.0
-mTimeliness = 1.0
+mTimeliness = .05
 mInsight = 1.0
 m = manager(mSkill,mCat,mTimeliness,mInsight)
 
@@ -39,7 +39,7 @@ m.addEngineer(e0)
 
 while(t0.complete == False): 
     e0.work()
-    print str(t0.trueState) + ',' + str(t0.perceivedState)
+    print str(t0.trueState) + ',' + str(t0.perceivedState) + ',' +str(t0.perceivedGoal)+','+ str(t0.daysWorked)
     m.provideFeedack()
     
 print '----------------------------------------------------'

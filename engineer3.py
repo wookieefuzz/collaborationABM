@@ -63,8 +63,9 @@ class engineer3:
         i = -1
         for t in self.taskList:
             i += 1
-            t.calcTrueState()
+            
             t.calcPerceivedState(self.avgWork,self.stdDev,effortAmount[i],self.timeliness)
+            t.calcTrueState()
             
            
     def receiveFeedback(self,errList,goalList):

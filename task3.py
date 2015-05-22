@@ -6,6 +6,8 @@ class task3:
         self.name = name
         
         self.managementModifier = 0.0
+        self.managementDeemsComplete = False
+        self.managementState = 'Stale'
         
         self.difficulty = diff
         self.category = cat
@@ -81,6 +83,8 @@ class task3:
         return output
         
     def updateManagementModifier(self,err,goal):
+        #print 'received error update of ' + str(err) + ' and goal is ' + str(goal)
+        self.managementState = 'Fresh'
         self.managementModifier = err
         self.perceivedGoal = goal
         
@@ -119,20 +123,35 @@ class task3:
         
     
     def calcPerceivedState(self,avgWork,stdDev,effort,timeliness):
-        if self.perceivedState >= 1.0:
+        if (self.perceivedState >= 1.0) or (self.managementDeemsComplete == True):
             print 'Task Already Complete, was finished in ' + str(self.daysWorked) + ' days'
             self.complete = True
             
-        elif self.managementModifier > (1.0 - self.perceivedState):
+        #elif (self.managementModifier > (1.0 - self.perceivedState)) & (self.managementState == 'Fresh'):
+        elif  (self.managementState == 'Fresh'):
+            #print 'im an engineer!'
             #print 'ignoring my perception, just listening to boss'
+            #print 'management modifier was ' + str(self.managementModifier)
             self.perceivedState = 1.0 - self.managementModifier
+            #print 'so my perceived state is ' + str(self.perceivedState)
             work = self.work(avgWork,stdDev,effort)
             
             self.workAmount += work
             self.daysWorked += 1.0
             self.perceivedState += work
+            self.managementState = 'Stale'
+            
+        #elif (self.managementModifier > (1.0 - self.perceivedState)) & (self.managementState == 'Stale'):
+#         elif  (self.managementState == 'Stale'):
+#             
+#             work = self.work(avgWork,stdDev,effort)
+#             
+#             self.workAmount += work
+#             self.daysWorked += 1.0
+#             self.perceivedState += work
             
         else: 
+            #print 'using my own error perception'
             self.complete = False
             # come up with a work amount
             work = self.work(avgWork,stdDev,effort)
@@ -151,9 +170,9 @@ class task3:
             n = -1
             for t in self.dependsOnTasks:
                 n += 1
-                #print 'communicated error = ' + str(t.communicatedGoal - t.communicatedState)
-                #print 'so we are adding: ' + str((t.communicatedGoal - t.communicatedState) * t.priority * self.impactAmnt[n])
-                #numSum += -((t.communicatedGoal - t.communicatedState) * t.priority * self.impactAmnt[n] / self.nominalDays) / prioritySum
+                print 'communicated error = ' + str(t.communicatedGoal - t.communicatedState)
+                print 'so we are adding: ' + str((t.communicatedGoal - t.communicatedState) * t.priority * self.impactAmnt[n])
+                numSum += -((t.communicatedGoal - t.communicatedState) * t.priority * self.impactAmnt[n] / self.nominalDays) / prioritySum
                 numSum += -((t.communicatedGoal - t.presentedState) * t.priority * effort*self.impactAmnt[n] / self.nominalDays) / prioritySum
             
             ps = numSum 
@@ -163,13 +182,13 @@ class task3:
             
             
             
-            if self.perceivedState<0.0:
-                self.perceivedState = 0.0
+        if self.perceivedState<0.0:
+            self.perceivedState = 0.0
             
-            rv = random.random()
+        rv = random.random()
             
-            if (rv<timeliness):
-                self.updateSharedInfo()
+        if (rv<timeliness):
+            self.updateSharedInfo()
         
     
     def printTrueState(self):
