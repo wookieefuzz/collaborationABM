@@ -181,7 +181,7 @@ class task3:
 #             self.perceivedState += work
             
         else: 
-            #print 'using my own error perception'
+            print 'using my own error perception'
             self.complete = False
             # come up with a work amount
             work = self.work(avgWork,stdDev,effort)
@@ -200,8 +200,8 @@ class task3:
             n = -1
             for t in self.dependsOnTasks:
                 n += 1
-                #print 'communicated error = ' + str(t.communicatedGoal - t.communicatedState)
-                #print 'so we are adding: ' + str((t.communicatedGoal - t.communicatedState) * t.priority * self.impactAmnt[n])
+                print 'communicated error = ' + str(t.communicatedGoal - t.communicatedState)
+                print 'so we are adding: ' + str((t.communicatedGoal - t.communicatedState) * t.priority * self.impactAmnt[n])
                 numSum += -((t.communicatedGoal - t.communicatedState) * t.priority * self.impactAmnt[n] / self.nominalDays) / prioritySum
                 numSum += -((t.communicatedGoal - t.presentedState) * t.priority * effort*self.impactAmnt[n] / self.nominalDays) / prioritySum
             
@@ -219,10 +219,10 @@ class task3:
         improvement = self.perceivedState - oldPerceivedState
         self.updateHistory(improvement)
         avgImp = self.avgImprovement()
-        print avgImp
+        #print avgImp
         #print self.improvementHistory
         
-        if (self.daysWorked > self.nominalDays) & (avgImp<self.impThreshold):
+        if (self.daysWorked > self.nominalDays*2.0) & (avgImp<self.impThreshold):
             print 'no meaningful improvement'
             self.noMoreImprovement = True
             

@@ -45,7 +45,7 @@ class manager:
                     #print 'perceived error communicated to engineer = ' + str(perceivedError)
                     errList.append(perceivedError)
                     goalList.append(1.0)
-                    e.receiveFeedback(errList,goalList)
+            e.receiveFeedback(errList,goalList)
                 
     
 #     def checkForErrors(self):

@@ -69,6 +69,7 @@ class engineer3:
             
            
     def receiveFeedback(self,errList,goalList):
+        
         i = -1
         for t in self.taskList:
             i += 1

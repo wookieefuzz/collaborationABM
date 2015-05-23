@@ -11,7 +11,7 @@ from task3 import task3
 
 mSkill = 5.0
 mCat = 1.0
-mTimeliness = 1.00
+mTimeliness = 0.10
 mInsight = 1.0
 m = manager(mSkill,mCat,mTimeliness,mInsight)
 
