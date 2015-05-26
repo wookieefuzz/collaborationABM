@@ -11,6 +11,7 @@ class manager:
         self.insight = insight
         self.engineerList = []
         self.specialtyModifier = .75
+        self.sentFeedback = 0.0
         
         
     def addEngineer(self,engineer):
@@ -33,6 +34,7 @@ class manager:
             for t in e.taskList:
                 rv = random.random()
                 if rv < self.timeliness:
+                    self.sentFeedback += 1.0
                     actualTaskError = t.trueGoal - t.trueState
                     if actualTaskError <= 0.0 :
                         actualTaskError = 0.0
@@ -45,7 +47,9 @@ class manager:
                     #print 'perceived error communicated to engineer = ' + str(perceivedError)
                     errList.append(perceivedError)
                     goalList.append(1.0)
-            e.receiveFeedback(errList,goalList)
+            
+            if len(errList)>0:
+                e.receiveFeedback(errList,goalList)
                 
     
 #     def checkForErrors(self):

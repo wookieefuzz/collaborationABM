@@ -14,6 +14,7 @@ class engineer3:
         self.timeliness = 1.0
         self.avgWork = 0.8
         self.stdDev = 0.2
+        self.listenedTimes = 0.0
         
         
         # own task list
@@ -70,13 +71,19 @@ class engineer3:
            
     def receiveFeedback(self,errList,goalList):
         
+ 
+        
         i = -1
         for t in self.taskList:
             i += 1
-            rv = random.random()
-            if rv<self.listening:
-                t.updateManagementModifier(errList[i],goalList[i])
-    
+            if (i<len(errList)):
+                rv = random.random()
+                
+            
+                if (rv<self.listening) & (len(errList)>0):
+                    t.updateManagementModifier(errList[i],goalList[i])
+                    self.listenedTimes += 1.0
+        
     
     
     

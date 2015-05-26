@@ -3,6 +3,9 @@ import random
 class task3:
     
     def __init__(self,diff,cat,prio,days,name):
+        
+        self.updatedTimes = 0.0
+        
         self.name = name
         
         self.nullZone = .02
@@ -39,6 +42,7 @@ class task3:
     
     def updateSharedInfo(self):
         self.presentedState = self.perceivedState
+        self.updatedTimes += 1.0
     
     def reset(self):
         self.complete = False
@@ -52,6 +56,13 @@ class task3:
         self.communicatedState = 0.0
         self.presentedState = 0.0
         self.gainedKnowledge = 0.0
+        self.noMoreImprovement = False
+        self.improvementHistory = [0]*30
+        
+        self.managementModifier = 0.0
+        self.managementDeemsComplete = False
+        self.managementState = 'Stale'
+        self.updatedTimes = 0.0
     
     def setToTrueComplete(self):
         self.complete = True
@@ -181,7 +192,7 @@ class task3:
 #             self.perceivedState += work
             
         else: 
-            print 'using my own error perception'
+            #print 'using my own error perception'
             self.complete = False
             # come up with a work amount
             work = self.work(avgWork,stdDev,effort)
@@ -200,8 +211,8 @@ class task3:
             n = -1
             for t in self.dependsOnTasks:
                 n += 1
-                print 'communicated error = ' + str(t.communicatedGoal - t.communicatedState)
-                print 'so we are adding: ' + str((t.communicatedGoal - t.communicatedState) * t.priority * self.impactAmnt[n])
+                #print 'communicated error = ' + str(t.communicatedGoal - t.communicatedState)
+                #print 'so we are adding: ' + str((t.communicatedGoal - t.communicatedState) * t.priority * self.impactAmnt[n])
                 numSum += -((t.communicatedGoal - t.communicatedState) * t.priority * self.impactAmnt[n] / self.nominalDays) / prioritySum
                 numSum += -((t.communicatedGoal - t.presentedState) * t.priority * effort*self.impactAmnt[n] / self.nominalDays) / prioritySum
             
@@ -223,7 +234,7 @@ class task3:
         #print self.improvementHistory
         
         if (self.daysWorked > self.nominalDays*2.0) & (avgImp<self.impThreshold):
-            print 'no meaningful improvement'
+            #print 'no meaningful improvement'
             self.noMoreImprovement = True
             
             
