@@ -2,9 +2,9 @@ from manager import manager
 from engineer3 import engineer3
 from task3 import task3
 
-f = open('MonteCarlo5.txt','w')
+f = open('MonteCarloBig_Correct.txt','w')
 
-numRuns = 100
+numRuns = 10
 
 mSkill = 5.0
 mCat = 1.0
@@ -70,23 +70,29 @@ m.addEngineer(e0)
 m.addEngineer(e1)
 m.addEngineer(e2)
 
+valList = [0.0, 0.05, 0.1, 0.25, .66, 1.0]
+
 taskList = [t0, t1, t2, t3, t4, t5]
 
-for mt in range(0,3):
-    for e0l in range(0,3):
-        for e1l in range(0,3):
-            for e2l in range(0,3):
-                for e0t in range(0,3):
-                    for e1t in range(0,3):
-                        for e2t in range(0,3):
-    
-                            e0.setListening(.5*float(e0l))
-                            e1.setListening(.5*float(e1l))
-                            e2.setListening(.5*float(e2l))
-                            m.timeliness = .5*float(mt)
-                            e0.setTimeliness(.5*float(e0t))
-                            e1.setTimeliness(.5*float(e1t))
-                            e2.setTimeliness(.5*float(e2t))
+runNum = 0
+
+for mt in range(0,6):
+    for e0l in range(0,6):
+        for e1l in range(0,6):
+            for e2l in range(0,6):
+                for e0t in range(0,6):
+                    for e1t in range(0,6):
+                        for e2t in range(0,6):
+                            
+                            runNum += 1
+                            
+                            e0.setListening(valList[e0l])
+                            e1.setListening(valList[e1l])
+                            e2.setListening(valList[e2l])
+                            m.timeliness = float(valList[mt])
+                            e0.setTimeliness(valList[e0t])
+                            e1.setTimeliness(valList[e1t])
+                            e2.setTimeliness(valList[e2t])
                             
                 
                             days = []
@@ -154,6 +160,6 @@ for mt in range(0,3):
                             text = str(e0.listening) +','+str(e1.listening) +','+str(e2.listening) +','+str(e0.timeliness) +','+str(e1.timeliness) +','+str(e2.timeliness) +','+str(m.timeliness)+','+str(impactFactor)+','+str(avgDays)+','+str(avgTimesManaged)+','+str(avgListenedTimes)+','+str(avgUpdatedTime)+','+str(minCompletionBest)+','+str(maxCompletionBest)+','+str(avgCompletion)
                             f.write(text +' \n')
                             print str(e0.listening) +','+str(e1.listening) +','+str(e2.listening) +','+str(e0.timeliness) +','+str(e1.timeliness) +','+str(e2.timeliness) +','+str(m.timeliness)
-                            
+                            print 'number = ' + str(runNum)
 
 f.close()
