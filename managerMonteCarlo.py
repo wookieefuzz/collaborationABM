@@ -2,7 +2,7 @@ from manager import manager
 from engineer3 import engineer3
 from task3 import task3
 
-f = open('MonteCarloBig_Correct.txt','w')
+f = open('MonteCarloStrongManagement.txt','w')
 
 numRuns = 10
 
